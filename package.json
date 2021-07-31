@@ -6,10 +6,12 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "npx nodemon src/index.js",
+    "server:test": "cross-env NODE_ENV=test node src/index.js",
     "client:dev": "nuxt",
     "client:build": "nuxt build",
     "client:start": "nuxt start",
-    "client:generate": "nuxt generate"
+    "client:generate": "nuxt generate",
+    "test:e2e": "npm run server:test & cypress open"
   },
   "author": "Mate Csornyei <mate@csornyei.com> (https://csornyei.com/)",
   "license": "ISC",
@@ -26,6 +28,8 @@
     "nuxt": "^2.15.7"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
+    "cypress": "^8.1.0",
     "jest": "^27.0.6",
     "mongodb-memory-server": "^7.3.4",
     "supertest": "^6.1.4"
