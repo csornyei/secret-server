@@ -23,3 +23,18 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+Cypress.Commands.add("vStore", () => {
+    return cy.window().then(window => window.$nuxt.$store);
+});
+
+Cypress.Commands.add("shouldHaveTrimmedText",
+    { prevSubject: true },
+    (subject, text) => {
+        if (isNaN(text)) {
+            expect(subject.text().trim()).equal(text);
+        } else {
+            expect(parseInt(subject.text().trim())).equal(text);
+        }
+        return subject
+    });

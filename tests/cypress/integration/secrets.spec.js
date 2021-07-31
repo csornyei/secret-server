@@ -32,7 +32,7 @@ describe('Secret Server App', () => {
                 cy.url().should("include", "/secrets");
             })
         })
-    })
+    });
 
     describe("Create Secret Page", () => {
         beforeEach(() => {
@@ -40,7 +40,7 @@ describe('Secret Server App', () => {
         })
 
         it('should open the create page', () => {
-            cy.get("h1").should('have.text', "Create new secret");
+            cy.get("h1").shouldHaveTrimmedText("Create new secret");
             cy.get("input").should('have.length', 3);
             cy.get("button").should('have.length', 1).shouldHaveTrimmedText("Save Secret");
             cy.get('a').should('have.length', 1).shouldHaveTrimmedText("See the saved secrets");
@@ -98,5 +98,50 @@ describe('Secret Server App', () => {
 
             cy.url().should("include", "/secrets");
         })
+    });
+
+    describe.only("Saved Secrets Page", () => {
+        beforeEach(() => {
+            cy.visit("localhost:3000/create");
+
+            cy.get("#secret-text").clear().type(`Test${Date.now()}`);
+            cy.get("#ttl").clear().type(0);
+            cy.get("#allowed-views").clear().type(50);
+
+            cy.get("button").click();
+
+            cy.get("a").click();
+
+            cy.vStore()
+                .its("getters.secrets/secrets")
+                .as("secret")
+        });
+
+        it("should open the saved secrets page", () => {
+            cy.get("h1").shouldHaveTrimmedText("Saved secrets");
+            cy.get("input").should("have.length", 1);
+            cy.get("button").should("have.length", 1).and("have.attr", "disabled");
+            cy.get("li").should("have.length", 1);
+            cy.get(".badge").shouldHaveTrimmedText(50);
+        });
+
+        it("should get a secret by hash", () => {
+            cy.get("@secret").then(([secret]) => {
+                cy.get("input").clear().type(secret.hash);
+                cy.get("button").click();
+
+                cy.get(".card").should("have.length", 1);
+                cy.get(".card-title").contains(secret.secretText);
+                cy.get(".card-subtitle").shouldHaveTrimmedText(secret.hash)
+
+                cy.get(".badge").first().shouldHaveTrimmedText(49);
+                cy.get(".badge").last().shouldHaveTrimmedText(49);
+
+                cy.get("span").first().click();
+
+                cy.get(".badge").first().shouldHaveTrimmedText(48);
+                cy.get(".badge").last().shouldHaveTrimmedText(48);
+            })
+        });
     })
 })

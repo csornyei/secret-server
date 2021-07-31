@@ -35,7 +35,7 @@ export const mutations = {
             state.secrets = [...JSON.parse(localSecrets)].map(secret => {
                 return {
                     ...secret,
-                    expired: secret.remainingViews === 0 || secret.expiresAt < Date.now()
+                    expired: secret.remainingViews === 0 || (secret.expiresAt < Date.now() && secret.expiresAt !== 0)
                 }
             });
         }
@@ -45,7 +45,7 @@ export const mutations = {
     },
     [MUTATIONS.UPDATE_SECRET](state, { idx, secret }) {
         const oldSecrets = [...state.secrets];
-        if (secret.remainingViews === 0 || secret.expiresAt < Date.now()) {
+        if (secret.remainingViews === 0 || (secret.expiresAt < Date.now() && secret.expiresAt !== 0)) {
             secret.expired = true;
         } else {
             secret.expired = false;
