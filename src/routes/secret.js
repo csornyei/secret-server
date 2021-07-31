@@ -58,25 +58,21 @@ router.post("/", async (req, res) => {
     }
 
     if (expireAfter < 0) {
-        errors.push({ message: "Time to live must be positive number!", field: expireAfter });
+        errors.push({ message: "Time to live must be positive number!", field: "expireAfter" });
     }
 
     if (errors.length > 0) {
         throw new ValidationError(errors);
     }
-
     const { iv, content } = encrypt(secret);
-
     const secretDoc = new Secret({
         hash: content,
         iv,
         expiresAt: expireAfter === 0 ? 0 : Date.now() + (expireAfter * 1000),
         remainingViews: expireAfterViews
     });
-
     await secretDoc.save();
-
-    res.send(
+    res.status(201).send(
         {
             "hash": content,
             "secretText": secret,

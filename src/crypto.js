@@ -1,13 +1,12 @@
 const crypto = require("crypto");
 
 const algorithm = "aes-256-ctr";
-const { CRYPTO_SECRET_KEY } = process.env;
-const key = crypto.createHash("sha256")
-    .update(CRYPTO_SECRET_KEY)
-    .digest();
 const iv = crypto.randomBytes(16);
 
 function encrypt(text) {
+    const key = crypto.createHash("sha256")
+        .update(process.env.CRYPTO_SECRET_KEY)
+        .digest();
     const cipher = crypto.createCipheriv(algorithm, key, iv);
 
     const encrypted = Buffer.concat([cipher.update(text), cipher.final()]);
@@ -19,6 +18,9 @@ function encrypt(text) {
 }
 
 function decrypt(iv, content) {
+    const key = crypto.createHash("sha256")
+        .update(process.env.CRYPTO_SECRET_KEY)
+        .digest();
     try {
         const decipher = crypto.createDecipheriv(algorithm, key, Buffer.from(iv, 'hex'));
 

@@ -11,7 +11,8 @@
     "client:build": "nuxt build",
     "client:start": "nuxt start",
     "client:generate": "nuxt generate",
-    "test:e2e": "npm run server:test & cypress open"
+    "test:e2e": "npm run server:test & cypress open",
+    "test:unit": "cross-env NODE_ENV=jesttest jest --watchAll --no-cache"
   },
   "author": "Mate Csornyei <mate@csornyei.com> (https://csornyei.com/)",
   "license": "ISC",
@@ -33,5 +34,12 @@
     "jest": "^27.0.6",
     "mongodb-memory-server": "^7.3.4",
     "supertest": "^6.1.4"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "setupFilesAfterEnv": [
+      "./tests/jest/setup.js"
+    ],
+    "testRegex": "./tests/jest/.*.test.js$"
   }
 }
