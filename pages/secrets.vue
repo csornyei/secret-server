@@ -9,7 +9,10 @@
             v-for="(s, index) in secrets"
             v-bind:key="index"
           >
-            <span class="turncate">
+            <span
+              class="turncate pointer user-select-none"
+              @click="() => getSecretFromList(s.hash)"
+            >
               {{ s.hash }}
             </span>
             <span
@@ -80,6 +83,9 @@
   white-space: nowrap;
   display: block;
 }
+.pointer {
+  cursor: pointer;
+}
 </style>
 
 <script>
@@ -107,6 +113,10 @@ export default {
   },
   methods: {
     ...mapActions("secrets", ["addSecret"]),
+    getSecretFromList(clickedHash) {
+      this.hash = clickedHash;
+      this.getSecret();
+    },
     getSecret() {
       this.error = null;
       this.$axios
@@ -116,12 +126,21 @@ export default {
           this.addSecret(data);
         })
         .catch((err) => {
-          console.log(err.toJSON());
-          if (err.request.status === 404) {
-            this.error = "There are no secret with this hash";
-          } else {
-            console.error(err);
+          const {
+            response: {
+              data: { errors },
+            },
+          } = err;
+          if (errors && errors.length > 0) {
+            if (errors[0].message === "Page not found") {
+              this.error = "There are no secret with this hash!";
+              return;
+            } else if (errors[0].message === "Secret no longer available!") {
+              this.error = errors[0].message;
+              return;
+            }
           }
+          this.error = "Can't get the secret right now!";
         });
     },
   },
