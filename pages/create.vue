@@ -59,6 +59,8 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   mounted() {
     this.$initialiseStore();
@@ -116,6 +118,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions("secrets", ["addSecret"]),
     submitForm() {
       this.verifyFormData();
       if (this.errors.length === 0) {
@@ -128,7 +131,7 @@ export default {
         this.$axios
           .post("/api/secret", body)
           .then(({ data }) => {
-            console.log(data);
+            this.addSecret(data);
             this.alert = {
               show: true,
               text: `Secret saved! It's hash is ${data.hash}`,

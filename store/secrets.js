@@ -32,7 +32,12 @@ export const mutations = {
         state.initalised = true;
         const localSecrets = localStorage.getItem("secrets")
         if (localSecrets) {
-            state.secrets = [...JSON.parse(localSecrets)];
+            state.secrets = [...JSON.parse(localSecrets)].map(secret => {
+                return {
+                    ...secret,
+                    expired: secret.remainingViews === 0 || secret.expiresAt < Date.now()
+                }
+            });
         }
     },
     [MUTATIONS.ADD_SECRET](state, value) {
@@ -40,6 +45,11 @@ export const mutations = {
     },
     [MUTATIONS.UPDATE_SECRET](state, { idx, secret }) {
         const oldSecrets = [...state.secrets];
+        if (secret.remainingViews === 0 || secret.expiresAt < Date.now()) {
+            secret.expired = true;
+        } else {
+            secret.expired = false;
+        }
         oldSecrets[idx] = secret;
         state.secrets = oldSecrets;
     },

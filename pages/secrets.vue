@@ -8,10 +8,18 @@
             class="list-group-item position-relative"
             v-for="(s, index) in secrets"
             v-bind:key="index"
+            v-bind:class="{ 'bg-secondary': s.expired }"
           >
             <span
               class="turncate pointer user-select-none"
-              @click="() => getSecretFromList(s.hash)"
+              v-bind:class="{ expired: s.expired }"
+              @click="
+                () => {
+                  if (!s.expired) {
+                    getSecretFromList(s.hash);
+                  }
+                }
+              "
             >
               {{ s.hash }}
             </span>
@@ -64,7 +72,7 @@
               </h5>
               <h6 class="card-subtitle mb-2 text-muted">{{ secret.hash }}</h6>
               <p v-if="secret.expiresAt !== 0" class="card-text">
-                {{ expireRemaining() }}
+                {{ expireRemaining }}
               </p>
               <p class="card-text">{{ secret.createdAt }}</p>
             </div>
@@ -86,10 +94,14 @@
 .pointer {
   cursor: pointer;
 }
+.expired {
+  cursor: not-allowed;
+}
 </style>
 
 <script>
 import { mapGetters, mapActions } from "vuex";
+import { formattedRemainingTime } from "../utils/utils";
 
 export default {
   mounted() {
@@ -100,15 +112,29 @@ export default {
       hash: "",
       secret: null,
       error: null,
+      secretExpire: 0,
+      countdown: null,
     };
   },
   computed: {
     ...mapGetters("secrets", ["secrets"]),
     expireRemaining() {
-      if (secret && secret.expiresAt !== 0) {
-        return secret.expiresAt - Date.now();
+      if (this.secretExpire !== 0) {
+        return formattedRemainingTime(this.secretExpire);
       }
       return 0;
+    },
+  },
+  watch: {
+    secretExpire: {
+      handler(value) {
+        if (value > 0) {
+          clearTimeout(this.countdown);
+          this.countdown = setTimeout(() => {
+            this.secretExpire = this.secretExpire - 1000;
+          }, 1000);
+        }
+      },
     },
   },
   methods: {
@@ -123,7 +149,9 @@ export default {
         .get(`/api/secret/${this.hash}`)
         .then(({ data }) => {
           this.secret = data;
-          this.addSecret(data);
+          this.secretExpire =
+            new Date(this.secret.expiresAt).getTime() - Date.now();
+          this.addSecret(this.secret);
         })
         .catch((err) => {
           const {
@@ -140,6 +168,7 @@ export default {
               return;
             }
           }
+
           this.error = "Can't get the secret right now!";
         });
     },

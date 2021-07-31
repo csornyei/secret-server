@@ -15,6 +15,7 @@ services:
             - ./static:/app/static
             - ./store:/app/store
             - ./plugins:/app/plugins
+            - ./utils:/app/utils
         command: npm run dev
         env_file:
             - .env
