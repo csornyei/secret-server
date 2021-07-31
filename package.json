@@ -4,7 +4,8 @@
   "description": "This server can be used to store and share secrets using a random generated URL",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node src/index.js",
+    "dev": "npx nodemon src/index.js"
   },
   "author": "Mate Csornyei <mate@csornyei.com> (https://csornyei.com/)",
   "license": "ISC",
@@ -12,6 +13,7 @@
     "crypto": "^1.0.1",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "express-async-errors": "^3.1.1",
     "mongoose": "^5.13.5"
   },
   "devDependencies": {

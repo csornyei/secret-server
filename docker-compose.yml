@@ -8,7 +8,9 @@ services:
             dockerfile: Dockerfile
         ports:
             - ${SERVER_PORT}:${SERVER_PORT}
-        command: npm start
+        volumes:
+            - ./src:/app/src
+        command: npm run dev
         env_file:
             - .env
         networks:
