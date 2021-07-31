@@ -1,4 +1,3 @@
-const mongoose = require("mongoose");
 const request = require("supertest");
 const createApp = require("../../src/app");
 
@@ -6,7 +5,7 @@ let app;
 
 beforeEach(async () => {
     app = await createApp();
-})
+});
 
 it('try to create secret with invalid data', async () => {
     const response = await request(app)
