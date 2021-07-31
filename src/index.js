@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
-const app = require("./app");
+const createApp = require("./app");
 
 const {
     MONGO_USER,
@@ -23,6 +23,7 @@ const start = async () => {
     } catch (error) {
         console.error(error);
     }
+    const app = await createApp();
     app.listen(SERVER_PORT, () => {
         console.log(`Listening on port ${SERVER_PORT}`);
     })

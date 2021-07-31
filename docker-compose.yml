@@ -10,6 +10,10 @@ services:
             - ${SERVER_PORT}:${SERVER_PORT}
         volumes:
             - ./src:/app/src
+            - ./components:/app/components
+            - ./pages:/app/pages
+            - ./static:/app/static
+            - ./store:/app/store
         command: npm run dev
         env_file:
             - .env

@@ -1,4 +1,5 @@
 const express = require('express');
+const { loadNuxt, build } = require("nuxt");
 require("express-async-errors");
 const { json } = require('express');
 
@@ -8,13 +9,27 @@ const errorHandler = require("./middlewares/errorHandler");
 
 const NotFoundError = require("./errors/NotFoundError");
 
-const app = express();
-app.use(json());
+const isDev = process.env.NODE_ENV !== "production";
 
-app.use("/api/secret", secretRoutes);
-app.all('*', async () => {
-    throw new NotFoundError();
-});
-app.use(errorHandler);
+async function createApp() {
+    const app = express();
+    app.use(json());
 
-module.exports = app;
+    const nuxt = await loadNuxt(isDev ? 'dev' : 'start');
+
+    app.use("/api/secret", secretRoutes);
+    app.use("/", nuxt.render);
+    app.all('*', async () => {
+        throw new NotFoundError();
+    });
+    app.use(errorHandler);
+
+    if (isDev) {
+        build(nuxt);
+    }
+
+    return app;
+}
+
+
+module.exports = createApp;

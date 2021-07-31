@@ -5,16 +5,25 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "npx nodemon src/index.js"
+    "dev": "npx nodemon src/index.js",
+    "client:dev": "nuxt",
+    "client:build": "nuxt build",
+    "client:start": "nuxt start",
+    "client:generate": "nuxt generate"
   },
   "author": "Mate Csornyei <mate@csornyei.com> (https://csornyei.com/)",
   "license": "ISC",
   "dependencies": {
+    "@nuxtjs/axios": "^5.13.6",
+    "bootstrap": "^5.0.2",
+    "bootstrap-vue": "^2.21.2",
+    "core-js": "^3.16.0",
     "crypto": "^1.0.1",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
-    "mongoose": "^5.13.5"
+    "mongoose": "^5.13.5",
+    "nuxt": "^2.15.7"
   },
   "devDependencies": {
     "jest": "^27.0.6",
