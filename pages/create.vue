@@ -60,6 +60,9 @@
 
 <script>
 export default {
+  mounted() {
+    this.$initialiseStore();
+  },
   data() {
     return {
       secret: {

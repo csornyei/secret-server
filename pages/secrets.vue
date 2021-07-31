@@ -86,6 +86,9 @@
 import { mapGetters, mapActions } from "vuex";
 
 export default {
+  mounted() {
+    this.$initialiseStore();
+  },
   data() {
     return {
       hash: "",
