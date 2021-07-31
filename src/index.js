@@ -17,7 +17,8 @@ const start = async () => {
         await mongoose.connect(`${MONGO_USER}:${MONGO_PASSWORD}@mongodb://mongo:27017`, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
-            useCreateIndex: true
+            useCreateIndex: true,
+            useFindAndModify: false
         });
         console.log('Connected to MongoDB');
     } catch (error) {
