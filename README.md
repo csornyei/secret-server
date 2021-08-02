@@ -1,3 +1,11 @@
+# Running the code
+
+For starting the app in development mode run `docker-compose up --build`
+
+To run the unit test for the server use `npm run test:unit`
+
+To run the integration tests for the whole app use `npm run test:e2e`
+
 # Introduction
 Your task is to implement a secret server. The secret server can be used to store and share secrets using a random generated URL. But the secret can be read only a limited number of times after that it will expire and won’t be available. The secret may have a TTL (Time to live). After the expiration time the secret won’t be available anymore.
 
